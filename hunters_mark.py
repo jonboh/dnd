@@ -4,7 +4,7 @@ from great_weapon_fighting import p_hit, damage_roll, damage_bonif
 rounds = 4
 target_ac = 15
 # Character
-strenght = +3
+strenght = +4
 proficiency = +3
 attacked_round = 3
 # State
@@ -25,7 +25,7 @@ hit_dc = proficiency + strenght
 
 prob_hit, prob_crit = p_hit(target_ac, hit_dc, advantage)
 damage_dice = damage_roll([6])
-damage_extra = damage_bonif(0)
+damage_extra = damage_bonif(0, 0)
 damage_attack = (prob_hit * (damage_dice + damage_extra)
                  + prob_crit * (2*damage_dice + damage_extra))
 
