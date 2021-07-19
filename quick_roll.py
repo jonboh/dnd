@@ -161,3 +161,8 @@ if __name__ == '__main__':
     roll_regis_greatsword(advantage=False,
                           hunters_mark=False,
                           divine_favor=False)
+    print('\n')
+    print('Regis Attack 2')
+    roll_regis_greatsword(advantage=False,
+                          hunters_mark=False,
+                          divine_favor=False)
