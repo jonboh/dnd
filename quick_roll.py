@@ -141,12 +141,13 @@ def roll_arastos_trampling(advantage):
                 print(f'Hit Dice: {total_roll}')
                 while hit := input('Hit? ') not in ('y', 'n'):
                     pass
-            if hit == 'n':
-                return
-            else:
-                # Damage Roll
-                damage_report[weapon_damage['Type']].append((
-                    roll(weapon_damage['Dice'], critical), weapon_damage['Bonus']))
+                if hit == 'n':
+                    return
+                else:
+                    # Damage Roll
+                    damage_report[weapon_damage['Type']].append((
+                        roll(weapon_damage['Dice'], critical),
+                        weapon_damage['Bonus']))
         print_damage_report(damage_report)
 
 
