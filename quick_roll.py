@@ -146,11 +146,22 @@ def roll_arastos_trampling(advantage):
 
 if __name__ == '__main__':
     os.system('cls')
+    regis_advantage = False
+    hunters_mark = False
+    divine_favor = False
+    arastos_advantage = False
+
     print('Arastos Attack')
-    roll_arastos_trampling(advantage=False)
+    roll_arastos_trampling(advantage=arastos_advantage)
 
     print('\n')
     print('Regis Attack')
-    roll_regis_greatsword(advantage=False,
-                          hunters_mark=False,
-                          divine_favor=False)
+    roll_regis_greatsword(advantage=regis_advantage,
+                          hunters_mark=hunters_mark,
+                          divine_favor=divine_favor)
+
+    print('\n')
+    print('Regis Attack 2')
+    roll_regis_greatsword(advantage=regis_advantage,
+                          hunters_mark=hunters_mark,
+                          divine_favor=divine_favor)
