@@ -37,12 +37,12 @@ def smite_dice():
 def print_damage_report(damage_report):
     print('\n')
     print('Damage Report:')
-    damage_summary = dict()
+    damage_summary = defaultdict(lambda: 0)
     for type_, rolls in damage_report.items():
         print(f'  {type_}:')
         for roll_ in rolls:
             print(f'    {roll_[0]} + {roll_[1]}')
-        damage_summary[type_] = sum(roll_[0]) + roll_[1]
+            damage_summary[type_] += sum(roll_[0]) + roll_[1]
     print('\n')
     print('Damage Summary')
     for type_, damage in damage_summary.items():
