@@ -42,7 +42,7 @@ def print_damage_report(damage_report):
         print(f'  {type_}:')
         for roll_ in rolls:
             print(f'    {roll_[0]} + {roll_[1]}')
-        damage_summary[type_] += sum(roll_[0]) + roll_[1]
+            damage_summary[type_] += sum(roll_[0]) + roll_[1]
     print('\n')
     print('Damage Summary')
     for type_, damage in damage_summary.items():
@@ -70,24 +70,26 @@ def roll_regis_greatsword(advantage, hunters_mark, divine_favor):
     if critical := roll_hit == 20:
         print(COLOR_RED+'Critical!'+COLOR_WHITE_DEFAULT)
         hit = 'y'
-        # extra_dage['Dice'] = np.array(2*list(extra_damage['Dice']))
     else:
         print(f'Hit Dice: {total_roll}')
         while (hit := input('Hit? ')) not in ('y', 'n'):
             pass
-    if hit == 'n':
-        return
-    else:
+    if hit == 'y':
         # Damage Roll
         roll_damage = roll(weapon_damage['Dice'], critical)
-        if great_weapon_fighting:
+        # refactor
+        if great_weapon_fighting and not critical:
             rerolls = roll_damage < 3
             roll_damage[rerolls] = roll(weapon_damage['Dice'][rerolls], False)
+        else:
+            rerolls = roll_damage < 3
+            if np.any(rerolls):
+                roll_damage[rerolls] = roll(np.array(
+                    2*list(weapon_damage['Dice']))[rerolls], True)
         damage_report[weapon_damage['Type']].append((
             roll_damage, weapon_damage['Bonus']))
         if divine_favor:
-            damage_report['Radiant'].append((roll([4], critical),
-                                            0))
+            damage_report['Radiant'].append((roll([4], critical), 0))
         while (smite := input('Smite? ').lower()) not in ('y', 'n'):
             pass
         if smite == 'y':
@@ -113,15 +115,11 @@ def roll_arastos_trampling(advantage):
     if critical := roll_hit == 20:
         print(COLOR_RED+'Critical!'+COLOR_WHITE_DEFAULT)
         hit = 'y'
-        weapon_damage['Dice'] = np.array(2*list(weapon_damage['Dice']))
-        # extra_dage['Dice'] = np.array(2*list(extra_damage['Dice']))
     else:
         print(f'Hit Dice: {total_roll}')
         while (hit := input('Hit? ')) not in ('y', 'n'):
             pass
-    if hit == 'n':
-        return
-    else:
+    if hit == 'y':
         # Damage Roll
         damage_report[weapon_damage['Type']].append((
             roll(weapon_damage['Dice'], critical), weapon_damage['Bonus']))
@@ -135,34 +133,35 @@ def roll_arastos_trampling(advantage):
             if critical := roll_hit == 20:
                 print(COLOR_RED+'Critical!'+COLOR_WHITE_DEFAULT)
                 hit = 'y'
-                weapon_damage['Dice'] = np.array(2*list(weapon_damage['Dice']))
-                # extra_dage['Dice'] = np.array(2*list(extra_damage['Dice']))
             else:
                 print(f'Hit Dice: {total_roll}')
-                while hit := input('Hit? ') not in ('y', 'n'):
+                while (hit := input('Hit? ')) not in ('y', 'n'):
                     pass
-                if hit == 'n':
-                    return
-                else:
-                    # Damage Roll
-                    damage_report[weapon_damage['Type']].append((
-                        roll(weapon_damage['Dice'], critical),
-                        weapon_damage['Bonus']))
+            if hit == 'y':
+                # Damage Roll
+                damage_report[weapon_damage['Type']].append((
+                    roll(weapon_damage['Dice'], critical), weapon_damage['Bonus']))
         print_damage_report(damage_report)
 
 
 if __name__ == '__main__':
     os.system('cls')
+    regis_advantage = False
+    hunters_mark = False
+    divine_favor = False
+    arastos_advantage = False
+
     print('Arastos Attack')
-    roll_arastos_trampling(advantage=False)
+    roll_arastos_trampling(advantage=arastos_advantage)
 
     print('\n')
     print('Regis Attack')
-    roll_regis_greatsword(advantage=False,
-                          hunters_mark=False,
-                          divine_favor=False)
+    roll_regis_greatsword(advantage=regis_advantage,
+                          hunters_mark=hunters_mark,
+                          divine_favor=divine_favor)
+
     print('\n')
     print('Regis Attack 2')
-    roll_regis_greatsword(advantage=False,
-                          hunters_mark=False,
-                          divine_favor=False)
+    roll_regis_greatsword(advantage=regis_advantage,
+                          hunters_mark=hunters_mark,
+                          divine_favor=divine_favor)
