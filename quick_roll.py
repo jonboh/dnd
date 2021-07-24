@@ -12,11 +12,15 @@ COLOR_BLUE = '\033[34m'  # blue
 COLOR_PURPLE = '\033[35m'  # purple
 
 
-def roll(dice, critical):
+def roll(dice, critical, return_rolled_dice=False):
+    rolled_dice = np.array(dice)
     if critical:
-        return np.random.randint(1, np.concatenate([dice, dice], axis=0))
+        rolled_dice = np.concatenate([dice, dice], axis=0)
+    rolled = np.random.randint(1, rolled_dice)
+    if return_rolled_dice:
+        return rolled, rolled_dice
     else:
-        return np.random.randint(1, dice)
+        return rolled
 
 
 def smite_dice():
@@ -76,16 +80,12 @@ def roll_regis_greatsword(advantage, hunters_mark, divine_favor):
             pass
     if hit == 'y':
         # Damage Roll
-        roll_damage = roll(weapon_damage['Dice'], critical)
+        roll_damage, rolled = roll(weapon_damage['Dice'], critical,
+                                   return_rolled_dice=True)
         # refactor
         if great_weapon_fighting and not critical:
             rerolls = roll_damage < 3
-            roll_damage[rerolls] = roll(weapon_damage['Dice'][rerolls], False)
-        else:
-            rerolls = roll_damage < 3
-            if np.any(rerolls):
-                roll_damage[rerolls] = roll(np.array(
-                    2*list(weapon_damage['Dice']))[rerolls], True)
+            roll_damage[rerolls] = roll(rolled[rerolls], False)
         damage_report[weapon_damage['Type']].append((
             roll_damage, weapon_damage['Bonus']))
         if divine_favor:
