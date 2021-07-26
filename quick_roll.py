@@ -23,6 +23,19 @@ def roll(dice, critical, return_rolled_dice=False):
         return rolled
 
 
+def hit_roll(hit_dc, advantage):
+    roll_hit = max(roll([20], advantage))
+    total_roll = roll_hit + hit_dc
+    if critical := (roll_hit == 20):
+        print(COLOR_RED+'Critical!'+COLOR_WHITE_DEFAULT)
+        hit = 'y'
+    else:
+        while (hit := input('Hit? ')) not in ('y', 'n'):
+            pass
+    print(f'Hit Dice: [{roll_hit}] + {hit_dc}= {total_roll}')
+    return hit, critical
+
+
 def smite_dice():
     dice = [8, 8]
     while (undead := input('  Undead/Fiend? ').lower()) not in ('y', 'n'):
@@ -60,24 +73,13 @@ def roll_regis_greatsword(advantage, hunters_mark, divine_favor):
                      'Bonus': 5,
                      'Type': 'Slashing'}
     # extra_damage = [] # for Improved Smite
-
     # Preprocess
     damage_report = defaultdict(lambda: [])
     if hunters_mark:
         weapon_damage['Dice'].append(6)
     weapon_damage['Dice'] = np.array(weapon_damage['Dice'])
 
-    # Hit Roll
-    roll_hit = max(roll([20], advantage))
-    total_roll = roll_hit + hit_dc
-
-    if critical := roll_hit == 20:
-        print(COLOR_RED+'Critical!'+COLOR_WHITE_DEFAULT)
-        hit = 'y'
-    else:
-        print(f'Hit Dice: {total_roll}')
-        while (hit := input('Hit? ')) not in ('y', 'n'):
-            pass
+    hit, critical = hit_roll(hit_dc, advantage)
     if hit == 'y':
         # Damage Roll
         roll_damage, rolled = roll(weapon_damage['Dice'], critical,
@@ -104,21 +106,10 @@ def roll_arastos_trampling(advantage):
     weapon_damage = {'Dice': [6, 6],
                      'Bonus': 4,
                      'Type': 'Bludgeoning'}
-
     # Preprocess
     damage_report = defaultdict(lambda: [])
-
     # Hit Roll
-    roll_hit = max(roll([20], advantage))
-    total_roll = roll_hit + hit_dc
-
-    if critical := roll_hit == 20:
-        print(COLOR_RED+'Critical!'+COLOR_WHITE_DEFAULT)
-        hit = 'y'
-    else:
-        print(f'Hit Dice: {total_roll}')
-        while (hit := input('Hit? ')) not in ('y', 'n'):
-            pass
+    hit, critical = hit_roll(hit_dc, advantage)
     if hit == 'y':
         # Damage Roll
         damage_report[weapon_damage['Type']].append((
@@ -126,17 +117,7 @@ def roll_arastos_trampling(advantage):
         while (trampling := input('Trampling (STR 14)? ').lower()) not in ('y', 'n'):
             pass
         if trampling == 'y':
-            # Hit Roll
-            roll_hit = max(roll([20], advantage))
-            total_roll = roll_hit + hit_dc
-
-            if critical := roll_hit == 20:
-                print(COLOR_RED+'Critical!'+COLOR_WHITE_DEFAULT)
-                hit = 'y'
-            else:
-                print(f'Hit Dice: {total_roll}')
-                while (hit := input('Hit? ')) not in ('y', 'n'):
-                    pass
+            hit, critical = hit_roll(hit_dc, advantage)
             if hit == 'y':
                 # Damage Roll
                 damage_report[weapon_damage['Type']].append((
