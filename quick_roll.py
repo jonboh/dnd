@@ -26,13 +26,13 @@ def roll(dice, critical, return_rolled_dice=False):
 def hit_roll(hit_dc, advantage):
     roll_hit = max(roll([20], advantage))
     total_roll = roll_hit + hit_dc
+    print(f'Hit Dice: [{roll_hit}] + {hit_dc} = {total_roll}')
     if critical := (roll_hit == 20):
         print(COLOR_RED+'Critical!'+COLOR_WHITE_DEFAULT)
         hit = 'y'
     else:
         while (hit := input('Hit? ')) not in ('y', 'n'):
             pass
-    print(f'Hit Dice: [{roll_hit}] + {hit_dc}= {total_roll}')
     return hit, critical
 
 
@@ -101,6 +101,35 @@ def roll_regis_greatsword(advantage, hunters_mark, divine_favor):
         print_damage_report(damage_report)
 
 
+def roll_regis_longsword(advantage, hunters_mark, divine_favor):
+    hit_dc = 8
+    weapon_damage = {'Dice': [8],
+                     'Bonus': 7,
+                     'Type': 'Slashing'}
+    # extra_damage = [] # for Improved Smite
+    # Preprocess
+    damage_report = defaultdict(lambda: [])
+    if hunters_mark:
+        weapon_damage['Dice'].append(6)
+    weapon_damage['Dice'] = np.array(weapon_damage['Dice'])
+
+    hit, critical = hit_roll(hit_dc, advantage)
+    if hit == 'y':
+        # Damage Roll
+        roll_damage = roll(weapon_damage['Dice'], critical)
+        damage_report[weapon_damage['Type']].append((
+            roll_damage, weapon_damage['Bonus']))
+        if divine_favor:
+            damage_report['Radiant'].append((roll([4], critical), 0))
+        while (smite := input('Smite? ').lower()) not in ('y', 'n'):
+            pass
+        if smite == 'y':
+            smite_dice_ = smite_dice()
+            damage_report[smite_dice_['Type']].append(
+                (roll(smite_dice_['Dice'], critical), smite_dice_['Bonus']))
+        print_damage_report(damage_report)
+
+
 def roll_arastos_trampling(advantage):
     hit_dc = 6
     weapon_damage = {'Dice': [6, 6],
@@ -127,22 +156,34 @@ def roll_arastos_trampling(advantage):
 
 if __name__ == '__main__':
     os.system('cls')
-    regis_advantage = False
-    hunters_mark = False
+    regis_advantage = True
+    hunters_mark = True
     divine_favor = False
     arastos_advantage = False
 
     print('Arastos Attack')
     roll_arastos_trampling(advantage=arastos_advantage)
 
+    # print('\n')
+    # print('Regis Attack')
+    # roll_regis_greatsword(advantage=regis_advantage,
+    #                       hunters_mark=hunters_mark,
+    #                       divine_favor=divine_favor)
+
+    # print('\n')
+    # print('Regis Attack 2')
+    # roll_regis_greatsword(advantage=regis_advantage,
+    #                       hunters_mark=hunters_mark,
+    #                       divine_favor=divine_favor)
+
     print('\n')
     print('Regis Attack')
-    roll_regis_greatsword(advantage=regis_advantage,
-                          hunters_mark=hunters_mark,
-                          divine_favor=divine_favor)
+    roll_regis_longsword(advantage=regis_advantage,
+                         hunters_mark=hunters_mark,
+                         divine_favor=divine_favor)
 
     print('\n')
     print('Regis Attack 2')
-    roll_regis_greatsword(advantage=regis_advantage,
-                          hunters_mark=hunters_mark,
-                          divine_favor=divine_favor)
+    roll_regis_longsword(advantage=regis_advantage,
+                         hunters_mark=hunters_mark,
+                         divine_favor=divine_favor)
