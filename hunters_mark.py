@@ -32,7 +32,7 @@ damage_attack = (prob_hit * (damage_dice + damage_extra)
 # two attacks
 damage_hunter = 2*damage_attack  # 2 attacks
 print(f'P(Enemy Hit): {phit_enemy} - P(Keep Con): {psave}', end='')
-print(' - P(Enemy Hit AND Keep Con): {pnotbreak}')
+print(f' - P(Enemy Hit AND Keep Con): {pnotbreak}')
 print(f'Round: {0} - Damage: {damage_hunter:.2f}')
 for i in range(1, rounds):
     damage_hunter += pnotbreak**(i*attacked_round) * 2 * damage_attack
